@@ -1,22 +1,16 @@
-version: 2.1
-
-jobs:
-  deploy:
-    machine:
-      image: ubuntu-2204:current
-    steps:
-      - checkout
-      - run:
-          name: Install Ansible
-          command: |
-            sudo apt update
-            sudo apt install -y ansible
-      - run:
-          name: Run Ansible Playbook on localhost
-          command: |
-            ansible-playbook playbooks/install-nginx.yml -i "localhost," -c local
-
-workflows:
-  deploy-on-push:
-    jobs:
-      - deploy
+---
+- name: Run locally
+  hosts: localhost
+  connection: local
+  become: yes
+  tasks:
+    - name: Install nginx
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+    - name: Ensure nginx is running
+      service:
+        name: nginx
+        state: started
+        enabled: yes
