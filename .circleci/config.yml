@@ -1,13 +1,16 @@
-# .circleci/config.yml
-version: 2.1
-jobs:
-  build:
-    docker:
-      - image: cimg/base:stable
-    steps:
-      - checkout
-      - run: echo "CircleCI 동작 확인2"
-workflows:
-  build-and-test:
-    jobs:
-      - build
+---
+- name: Run locally
+  hosts: localhost
+  connection: local
+  become: yes
+  tasks:
+    - name: Install nginx
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+    - name: Ensure nginx is running
+      service:
+        name: nginx
+        state: started
+        enabled: yes
